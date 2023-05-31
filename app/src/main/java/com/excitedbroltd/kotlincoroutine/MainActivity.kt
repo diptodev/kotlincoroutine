@@ -29,7 +29,17 @@ class MainActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@MainActivity, "$number", Toast.LENGTH_SHORT).show()
                 }
-
+                val value = CoroutineScope(Dispatchers.IO).async {
+                    delay(3000)
+                    return@async 10
+                }
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        " this is ${value.await()}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
 
             }
 
