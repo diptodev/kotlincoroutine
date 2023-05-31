@@ -19,8 +19,31 @@ class MainActivity : AppCompatActivity() {
 
         }
         binding.buttonSubmit.setOnClickListener {
-            Toast.makeText(this, "Button clicked", Toast.LENGTH_SHORT).show()
+            //  Toast.makeText(this, "Button clicked", Toast.LENGTH_SHORT).show()
+            CoroutineScope(Dispatchers.IO).launch {
+                val number1 = async { getNumber() }
+                val number2 = async { getNumber2() }
+
+                val number = number1.await() + number2.await()
+
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@MainActivity, "$number", Toast.LENGTH_SHORT).show()
+                }
+
+
+            }
+
         }
+    }
+
+    private suspend fun getNumber(): Int {
+        delay(5000)
+        return 5
+    }
+
+    private suspend fun getNumber2(): Int {
+        delay(7000)
+        return 7
     }
 
     private suspend fun getCount(): Int {
@@ -29,7 +52,7 @@ class MainActivity : AppCompatActivity() {
             for (i in 1..200000) {
                 count = i
                 Log.d("TAG", "getCount: $i")
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     binding.textView.text = "$count"
                 }
 
